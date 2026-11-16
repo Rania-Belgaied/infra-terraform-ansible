@@ -5,7 +5,7 @@ variable "cluster_name" {
 
 variable "nodes" {
   type    = number
-  default = 1 # 1 nœud suffit sur une VM de 8 Go
+  default = 1
 }
 
 variable "cpus" {
@@ -15,7 +15,7 @@ variable "cpus" {
 
 variable "memory" {
   type    = string
-  default = "5g" # descends à 4g si la VM a 6 Go
+  default = "5g"
 }
 
 variable "namespaces" {

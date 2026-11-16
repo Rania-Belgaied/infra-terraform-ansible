@@ -1,0 +1,8 @@
+---
+kubectl_version: "v1.30.0"
+helm_version: "v3.15.4"
+cluster_context: "gitops-cluster"
+kubeconfig_path: "{{ lookup('env', 'HOME') }}/.kube/config"
+
+hardening_user: "devops"
+ssh_public_key_file: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa.pub"

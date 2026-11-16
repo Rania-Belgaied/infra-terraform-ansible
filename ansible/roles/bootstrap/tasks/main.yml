@@ -1,0 +1,35 @@
+---
+- name: Ajouter le dépôt Helm Argo
+  kubernetes.core.helm_repository:
+    name: argo
+    repo_url: https://argoproj.github.io/argo-helm
+
+- name: Ajouter le dépôt Helm Prometheus
+  kubernetes.core.helm_repository:
+    name: prometheus-community
+    repo_url: https://prometheus-community.github.io/helm-charts
+
+- name: Déployer ArgoCD
+  kubernetes.core.helm:
+    name: argocd
+    chart_ref: argo/argo-cd
+    release_namespace: argocd
+    kubeconfig: "{{ kubeconfig_path }}"
+    context: "{{ cluster_context }}"
+    update_repo_cache: true
+    wait: true
+    timeout: 10m
+
+- name: Déployer kube-prometheus-stack
+  kubernetes.core.helm:
+    name: monitoring
+    chart_ref: prometheus-community/kube-prometheus-stack
+    release_namespace: monitoring
+    kubeconfig: "{{ kubeconfig_path }}"
+    context: "{{ cluster_context }}"
+    wait: true
+    timeout: 15m
+    values:
+      prometheus:
+        prometheusSpec:
+          serviceMonitorSelectorNilUsesHelmValues: false

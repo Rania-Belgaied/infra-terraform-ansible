@@ -1,0 +1,18 @@
+---
+- name: Installer les prérequis
+  hosts: local
+  become: true
+  roles:
+    - { role: prerequisites, tags: [prerequisites] }
+
+- name: Bootstrap du cluster
+  hosts: local
+  become: false
+  roles:
+    - { role: bootstrap, tags: [bootstrap] }
+
+- name: Hardening de l'hôte
+  hosts: local
+  become: true
+  roles:
+    - { role: hardening, tags: [hardening] }

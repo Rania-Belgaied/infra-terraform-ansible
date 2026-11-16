@@ -1,0 +1,37 @@
+---
+- name: Installer les paquets système de base
+  ansible.builtin.apt:
+    name:
+      - curl
+      - jq
+      - git
+      - ca-certificates
+      - gnupg
+      - python3-kubernetes
+      - python3-yaml
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Installer kubectl
+  ansible.builtin.get_url:
+    url: "https://dl.k8s.io/release/{{ kubectl_version }}/bin/linux/amd64/kubectl"
+    dest: /usr/local/bin/kubectl
+    mode: "0755"
+
+- name: Installer Helm
+  ansible.builtin.unarchive:
+    src: "https://get.helm.sh/helm-{{ helm_version }}-linux-amd64.tar.gz"
+    dest: /usr/local/bin
+    remote_src: true
+    extra_opts:
+      - --strip-components=1
+      - linux-amd64/helm
+    creates: /usr/local/bin/helm
+
+- name: Vérifier les versions installées
+  ansible.builtin.command: "{{ item }}"
+  loop:
+    - kubectl version --client
+    - helm version --short
+  changed_when: false
