@@ -19,6 +19,8 @@
     update_repo_cache: true
     wait: true
     timeout: 10m
+    values_files:
+      - "{{ role_path }}/files/argocd-values.yml"
 
 - name: Déployer kube-prometheus-stack
   kubernetes.core.helm:
@@ -29,7 +31,5 @@
     context: "{{ cluster_context }}"
     wait: true
     timeout: 15m
-    values:
-      prometheus:
-        prometheusSpec:
-          serviceMonitorSelectorNilUsesHelmValues: false
+    values_files:
+      - "{{ role_path }}/files/monitoring-values.yml"
