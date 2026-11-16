@@ -19,19 +19,31 @@
     dest: /usr/local/bin/kubectl
     mode: "0755"
 
-- name: Installer Helm
+- name: Télécharger l'archive Helm
+  ansible.builtin.get_url:
+    url: "https://get.helm.sh/helm-{{ helm_version }}-linux-amd64.tar.gz"
+    dest: "/tmp/helm-{{ helm_version }}.tar.gz"
+    mode: "0644"
+
+- name: Extraire l'archive Helm
   ansible.builtin.unarchive:
-    src: "https://get.helm.sh/helm-{{ helm_version }}-linux-amd64.tar.gz"
-    dest: /usr/local/bin
+    src: "/tmp/helm-{{ helm_version }}.tar.gz"
+    dest: /tmp
     remote_src: true
-    extra_opts:
-      - --strip-components=1
-      - linux-amd64/helm
-    creates: /usr/local/bin/helm
+    creates: /tmp/linux-amd64/helm
+
+- name: Installer le binaire Helm
+  ansible.builtin.copy:
+    src: /tmp/linux-amd64/helm
+    dest: /usr/local/bin/helm
+    owner: root
+    group: root
+    mode: "0755"
+    remote_src: true
 
 - name: Vérifier les versions installées
   ansible.builtin.command: "{{ item }}"
   loop:
-    - kubectl version --client
-    - helm version --short
+    - /usr/local/bin/kubectl version --client
+    - /usr/local/bin/helm version --short
   changed_when: false
